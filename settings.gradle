@@ -1,0 +1,7 @@
+dependencyResolutionManagement {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "Products"
+include ':app'
