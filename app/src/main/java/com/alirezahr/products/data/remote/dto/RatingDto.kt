@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 
 data class RatingDto(
     @SerialName("rate")
-    val float: Float,
+    val rate: Float,
 
     @SerialName("count")
     val count: Int

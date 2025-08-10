@@ -3,7 +3,9 @@ package com.alirezahr.products.di
 import com.alirezahr.products.data.remote.api.ProductApiService
 import com.alirezahr.products.data.remote.base.RetrofitConnectionHandler
 import com.alirezahr.products.domain.repository.ProductRepository
-import com.alirezahr.products.domain.usecase.GetProductUseCase
+import com.alirezahr.products.domain.usecase.GetProductListByIdUseCase
+import com.alirezahr.products.domain.usecase.GetProductListUseCase
+import com.alirezahr.products.domain.usecase.UpdateBookMarkProductUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +38,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGetProductUseCase(repository: ProductRepository): GetProductUseCase =
-        GetProductUseCase(repository)
+    fun provideGetProductUseCase(repository: ProductRepository): GetProductListUseCase =
+        GetProductListUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetByIdProductUseCase(repository: ProductRepository): GetProductListByIdUseCase =
+        GetProductListByIdUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateBookMarkProductUseCase(repository: ProductRepository): UpdateBookMarkProductUseCase =
+        UpdateBookMarkProductUseCase(repository)
 }

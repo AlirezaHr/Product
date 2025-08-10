@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,7 +34,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -55,7 +58,7 @@ fun ProductListScreen(
     onProductClick: (Product) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-
+    val listState = rememberLazyListState()
     val filteredProducts by remember {
         derivedStateOf {
             if (state.searchQuery.isBlank()) state.products
@@ -110,7 +113,7 @@ fun ProductListScreen(
             )
         }else{
             if (filteredProducts.isNotEmpty()) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier.fillMaxSize(), state = listState) {
                     items(filteredProducts) { product ->
                         ProductItem(product) {
                             onProductClick.invoke(product)

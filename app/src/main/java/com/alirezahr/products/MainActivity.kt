@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.alirezahr.products.presentation.ProductsNavGraph
 import com.alirezahr.products.presentation.list.ProductListScreen
 import com.alirezahr.products.ui.theme.ProductsTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,9 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProductsTheme {
-                ProductListScreen {
-                    Log.d("product", it.toString())
-                }
+                ProductsNavGraph()
             }
         }
     }

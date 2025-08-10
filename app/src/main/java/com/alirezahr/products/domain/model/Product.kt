@@ -9,9 +9,10 @@ data class Product (
     val description: String,
     val category: String,
     val image: String,
-    val rating: RatingDto
+    val rating: RatingDto,
+    var isBookMark: Boolean = false
 ){
-    fun briefTitle(maxLength: Int = 20): String {
+    fun briefTitle(maxLength: Int = 18): String {
         return if (title.length > maxLength) {
             title.take(maxLength).trimEnd() + "..."
         } else {
