@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.alirezahr.products.data.remote.base.Resource
 import com.alirezahr.products.domain.usecase.GetProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +21,9 @@ class ProductListViewModel @Inject constructor(
     fun handleIntent(intent: ProductListIntent) {
         when (intent) {
             is ProductListIntent.LoadProduct -> loadProduct()
+            is ProductListIntent.SearchChanged -> {
+                searchProduct(intent.query)
+            }
         }
     }
 
@@ -43,5 +48,9 @@ class ProductListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun searchProduct(query: String) {
+        _state.update { it.copy(searchQuery = query) }
     }
 }

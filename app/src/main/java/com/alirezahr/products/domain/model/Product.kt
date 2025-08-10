@@ -10,4 +10,12 @@ data class Product (
     val category: String,
     val image: String,
     val rating: RatingDto
-)
+){
+    fun briefTitle(maxLength: Int = 20): String {
+        return if (title.length > maxLength) {
+            title.take(maxLength).trimEnd() + "..."
+        } else {
+            title
+        }
+    }
+}
