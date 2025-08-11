@@ -1,11 +1,13 @@
 package com.alirezahr.products.presentation.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alirezahr.products.data.remote.base.Resource
 import com.alirezahr.products.domain.model.Product
 import com.alirezahr.products.domain.usecase.GetProductListUseCase
 import com.alirezahr.products.domain.usecase.ShowOnlyBookMarkProductUseCase
+import com.alirezahr.products.presentation.mapError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,12 +51,18 @@ class ProductListViewModel @Inject constructor(
                     _state.update { it.copy(products = fullProductList) }
                 }
             }
+
+            ProductListIntent.RetryClick -> {
+                loadProduct()
+            }
         }
     }
 
     private fun loadProduct() {
         viewModelScope.launch {
             getProductUseCase.invoke().collect { res ->
+                Log.d("LLLA", res.code.toString())
+
                 when (res.status) {
                     Resource.Status.LOADING -> _state.update {
                         it.copy(
@@ -77,7 +85,7 @@ class ProductListViewModel @Inject constructor(
                     Resource.Status.ERROR -> _state.update {
                         it.copy(
                             isLoading = false,
-                            error = res.message
+                            error = mapError(message = res.message)
                         )
                     }
                 }

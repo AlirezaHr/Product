@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -104,9 +105,13 @@ fun ProductListScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        ProductListContent(state, filteredProducts, listState) { product ->
-            onProductClick.invoke(product)
-        }
+        ProductListContent(
+            state,
+            filteredProducts,
+            listState,
+            onProductClick = { product -> onProductClick.invoke(product) },
+            onRetry = {viewModel.handleIntent(ProductListIntent.RetryClick)}
+        )
     }
 }
 
@@ -216,7 +221,8 @@ fun ProductListContent(
     state: ProductListState,
     filteredProducts: List<Product>,
     listState: LazyListState,
-    onProductClick: (Product) -> Unit
+    onProductClick: (Product) -> Unit,
+    onRetry: () -> Unit
 ) {
     if (state.isLoading) {
         InCenterParent {
@@ -227,9 +233,15 @@ fun ProductListContent(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                text = stringResource(R.string.error, state.error),
+                text = state.error.name,
                 fontSize = 18.sp,
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Button(onClick = {
+                onRetry.invoke()
+            }) {
+                Text(text = "Reload")
+            }
         }
     } else if (filteredProducts.isNotEmpty()) {
         LazyColumn(
