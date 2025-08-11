@@ -18,14 +18,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.alirezahr.products.R
@@ -52,30 +55,33 @@ fun DetailProductScreen(
         detailProductViewModel.handleIntent(DetailProductIntent.LoadDetailProduct(productId))
     }
 
-
     state.product?.let { product ->
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            item{Spacer(modifier = Modifier.height(56.dp)) }
-            item {
-                AppBar(
-                    product = product,
-                    onBackClicked = { detailProductViewModel.handleIntent(DetailProductIntent.OnBackClick) },
-                    onFavClicked = { detailProductViewModel.handleIntent(DetailProductIntent.BookMarkClick) }
-                )
-            }
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item { Spacer(modifier = Modifier.height(32.dp)) }
+                item {
+                    AppBar(
+                        product = product,
+                        onBackClicked = { detailProductViewModel.handleIntent(DetailProductIntent.OnBackClick) },
+                        onFavClicked = { detailProductViewModel.handleIntent(DetailProductIntent.BookMarkClick) }
+                    )
+                }
 
-            item {
-                GlideImage(
-                    model = product.image,
-                    contentDescription = null,
-                modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item{Spacer(modifier = Modifier.height(8.dp))}
+                item {
+                    GlideImage(
+                        model = product.image,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(8.dp)) }
 
-            item{ContentDetailProduct(product) {
-                detailProductViewModel.handleIntent(DetailProductIntent.BookMarkClick)
-            }}
+                item {
+                    ContentDetailProduct(product) {
+                        detailProductViewModel.handleIntent(DetailProductIntent.BookMarkClick)
+                    }
+                }
+            }
         }
     }
 }
