@@ -258,7 +258,7 @@ fun TogglePriceSort(priceSortOrder: PriceSortOrder,onOrderClick:()->Unit) {
             onOrderClick.invoke()
         }) {
             val text = when (priceSortOrder) {
-                PriceSortOrder.ASCENDING -> "INC"
+                PriceSortOrder.ASCENDING -> "ASC"
                 PriceSortOrder.DESCENDING -> "DES"
                 else -> "NOR"
             }
