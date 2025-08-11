@@ -241,7 +241,7 @@ fun ProductListContent(
             Button(onClick = {
                 onRetry.invoke()
             }) {
-                Text(text = "Reload")
+                Text(text = stringResource(R.string.on_retry))
             }
         }
     } else if (filteredProducts.isNotEmpty()) {
