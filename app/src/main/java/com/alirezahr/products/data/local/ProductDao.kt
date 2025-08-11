@@ -19,4 +19,7 @@ interface ProductDao {
 
     @Query("UPDATE products SET isBookmark = :isBookmark WHERE id = :productId")
     suspend fun updateBookMarkProduct(isBookmark: Boolean, productId: Int)
+
+    @Query("SELECT * FROM products WHERE isBookMark = TRUE")
+    fun getOnlyBookMarkProduct(): Flow<List<ProductEntity>>
 }

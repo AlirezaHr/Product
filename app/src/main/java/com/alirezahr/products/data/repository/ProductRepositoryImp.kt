@@ -23,7 +23,7 @@ class ProductRepositoryImp @Inject constructor(
     private val retrofitConnection: RetrofitConnectionHandler,
     private val productDao: ProductDao
 ) : ProductRepository, BaseDataHandler() {
-    override suspend fun getProducts(): Flow<Resource<List<Product>>> =
+    override fun getProducts(): Flow<Resource<List<Product>>> =
         flow<Resource<List<Product>>> {
             emit(Resource.loading())
             retrofitConnection.execute { productApi.getProductList() }.let { response ->
@@ -74,4 +74,8 @@ class ProductRepositoryImp @Inject constructor(
     override suspend fun updateBookMark(productId: Int, isBookMark: Boolean) {
         productDao.updateBookMarkProduct(!isBookMark, productId)
     }
+
+    override fun getOnlyBookMarkProduct(): Flow<List<Product>> =
+        productDao.getOnlyBookMarkProduct()
+            .map { entities -> entities.map { it.toDomain() } }
 }

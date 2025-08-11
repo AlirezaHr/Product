@@ -5,6 +5,7 @@ import com.alirezahr.products.data.remote.base.RetrofitConnectionHandler
 import com.alirezahr.products.domain.repository.ProductRepository
 import com.alirezahr.products.domain.usecase.GetProductListByIdUseCase
 import com.alirezahr.products.domain.usecase.GetProductListUseCase
+import com.alirezahr.products.domain.usecase.ShowOnlyBookMarkProductUseCase
 import com.alirezahr.products.domain.usecase.UpdateBookMarkProductUseCase
 import dagger.Module
 import dagger.Provides
@@ -50,4 +51,9 @@ object NetworkModule {
     @Singleton
     fun provideUpdateBookMarkProductUseCase(repository: ProductRepository): UpdateBookMarkProductUseCase =
         UpdateBookMarkProductUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideShowOnlyBookmarkUseCase(repository: ProductRepository): ShowOnlyBookMarkProductUseCase =
+        ShowOnlyBookMarkProductUseCase(repository)
 }

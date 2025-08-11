@@ -6,8 +6,8 @@ import com.alirezahr.products.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetProductListUseCase @Inject constructor(
+class ShowOnlyBookMarkProductUseCase @Inject constructor(
     private val repository: ProductRepository
 ) {
-    operator fun invoke():Flow<Resource<List<Product>>> = repository.getProducts()
+    operator fun invoke(): Flow<List<Product>> = repository.getOnlyBookMarkProduct()
 }
