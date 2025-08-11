@@ -4,9 +4,8 @@ import com.alirezahr.products.data.local.ProductDao
 import com.alirezahr.products.data.mapper.toDomain
 import com.alirezahr.products.data.mapper.toEntity
 import com.alirezahr.products.data.remote.api.ProductApiService
-import com.alirezahr.products.data.remote.base.BaseDataHandler
+import com.alirezahr.products.data.remote.base.BaseHandleRetrofitConnection
 import com.alirezahr.products.data.remote.base.Resource
-import com.alirezahr.products.data.remote.base.RetrofitConnectionHandler
 import com.alirezahr.products.domain.model.Product
 import com.alirezahr.products.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,13 +19,12 @@ import javax.inject.Inject
 
 class ProductRepositoryImp @Inject constructor(
     private val productApi: ProductApiService,
-    private val retrofitConnection: RetrofitConnectionHandler,
     private val productDao: ProductDao
-) : ProductRepository, BaseDataHandler() {
+) : ProductRepository, BaseHandleRetrofitConnection() {
     override fun getProducts(): Flow<Resource<List<Product>>> =
         flow<Resource<List<Product>>> {
             emit(Resource.loading())
-            retrofitConnection.execute { productApi.getProductList() }.let { response ->
+            makeConnection { productApi.getProductList() }.let { response ->
                 when (response.status) {
                     Resource.Status.SUCCESS -> {
                         val products = response.data?.map { it.toDomain() } ?: emptyList()

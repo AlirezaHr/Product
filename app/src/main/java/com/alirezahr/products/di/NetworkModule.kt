@@ -1,7 +1,6 @@
 package com.alirezahr.products.di
 
 import com.alirezahr.products.data.remote.api.ProductApiService
-import com.alirezahr.products.data.remote.base.RetrofitConnectionHandler
 import com.alirezahr.products.domain.repository.ProductRepository
 import com.alirezahr.products.domain.usecase.GetProductListByIdUseCase
 import com.alirezahr.products.domain.usecase.GetProductListUseCase
@@ -32,10 +31,6 @@ object NetworkModule {
     fun provideProductApiService(retrofit: Retrofit): ProductApiService {
         return retrofit.create(ProductApiService::class.java)
     }
-
-    @Provides
-    @Singleton
-    fun provideRetrofitConnectionHandler(): RetrofitConnectionHandler = RetrofitConnectionHandler()
 
     @Provides
     @Singleton

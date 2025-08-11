@@ -1,7 +1,7 @@
 package com.alirezahr.products.presentation.list
 
 import com.alirezahr.products.domain.model.Product
-import com.alirezahr.products.presentation.Error
+import com.alirezahr.products.data.remote.base.Error
 
 data class ProductListState(
     val isLoading: Boolean = false,

@@ -1,13 +1,12 @@
 package com.alirezahr.products.presentation.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alirezahr.products.data.remote.base.Resource
 import com.alirezahr.products.domain.model.Product
 import com.alirezahr.products.domain.usecase.GetProductListUseCase
 import com.alirezahr.products.domain.usecase.ShowOnlyBookMarkProductUseCase
-import com.alirezahr.products.presentation.mapError
+import com.alirezahr.products.data.remote.base.mapError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.alirezahr.products.presentation
+package com.alirezahr.products.data.remote.base
 
 enum class Error {
     SOMETHING_WRONG,

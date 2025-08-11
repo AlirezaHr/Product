@@ -114,8 +114,6 @@ fun ProductListScreen(
             onRetry = {viewModel.handleIntent(ProductListIntent.RetryClick)}
         )
     }
-
-    Log.d("LLLR","1")
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
