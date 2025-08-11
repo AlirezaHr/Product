@@ -31,7 +31,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -75,39 +74,38 @@ fun ProductListScreen(
             }
         }
     }
-    PullToRefreshBox() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(18.dp, 56.dp, 18.dp, 18.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.product_list),
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineLarge
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(18.dp, 56.dp, 18.dp, 18.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.product_list),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+        Column(Modifier.padding(16.dp)) {
+            SearchBar(
+                query = state.searchQuery,
+                onQueryChange = { viewModel.handleIntent(ProductListIntent.SearchChanged(it)) },
+                onSearch = { query ->
+                    viewModel.handleIntent(ProductListIntent.SearchChanged(query))
+                },
             )
+        }
 
-            Column(Modifier.padding(16.dp)) {
-                SearchBar(
-                    query = state.searchQuery,
-                    onQueryChange = { viewModel.handleIntent(ProductListIntent.SearchChanged(it)) },
-                    onSearch = { query ->
-                        viewModel.handleIntent(ProductListIntent.SearchChanged(query))
-                    },
-                )
-            }
+        Spacer(Modifier.height(4.dp))
 
-            Spacer(Modifier.height(4.dp))
+        BookMarkSwitch(state.isBookMark) {
+            viewModel.handleIntent(ProductListIntent.SwitchChange)
+        }
 
-            BookMarkSwitch(state.isBookMark) {
-                viewModel.handleIntent(ProductListIntent.SwitchChange)
-            }
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ProductListContent(state, filteredProducts, listState) { product ->
-                onProductClick.invoke(product)
-            }
+        ProductListContent(state, filteredProducts, listState) { product ->
+            onProductClick.invoke(product)
         }
     }
 }
