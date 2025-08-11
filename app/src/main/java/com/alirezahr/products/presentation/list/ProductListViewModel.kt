@@ -21,13 +21,12 @@ class ProductListViewModel @Inject constructor(
     private val getProductUseCase: GetProductListUseCase,
     private val showOnlyBookMarkProductUseCase: ShowOnlyBookMarkProductUseCase
 ) : ViewModel() {
-    private var bookmarkJob: Job? = null
 
     private val _state = MutableStateFlow(ProductListState())
-
     val state: StateFlow<ProductListState> = _state
 
     private var fullProductList: List<Product> = emptyList()
+    private var bookmarkJob: Job? = null
 
     fun handleIntent(intent: ProductListIntent) {
         when (intent) {
@@ -38,18 +37,11 @@ class ProductListViewModel @Inject constructor(
             }
 
             is ProductListIntent.SearchChanged -> {
-                searchProduct(intent.query)
+                _state.update { it.copy(searchQuery = intent.query) }
             }
 
             is ProductListIntent.SwitchChange -> {
-                _state.update { it.copy(isBookMark = !it.isBookMark) }
-
-                if (_state.value.isBookMark) {
-                    switchBookMark()
-                } else {
-                    bookmarkJob?.cancel()
-                    _state.update { it.copy(products = fullProductList) }
-                }
+                toggleBookmark()
             }
 
             ProductListIntent.RetryClick -> {
@@ -61,49 +53,58 @@ class ProductListViewModel @Inject constructor(
     private fun loadProduct() {
         viewModelScope.launch {
             getProductUseCase.invoke().collect { res ->
-                Log.d("LLLA", res.code.toString())
-
                 when (res.status) {
-                    Resource.Status.LOADING -> _state.update {
-                        it.copy(
-                            isLoading = true,
-                            error = null
-                        )
+                    Resource.Status.LOADING -> {
+                        _state.update {
+                            it.copy(isLoading = true, error = null)
+                        }
                     }
+
                     Resource.Status.SUCCESS -> {
                         fullProductList = res.data ?: emptyList()
-
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                products = res.data ?: emptyList(),
+                                products = fullProductList,
                                 hasLoaded = true
                             )
                         }
                     }
 
-                    Resource.Status.ERROR -> _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = mapError(message = res.message)
-                        )
+                    Resource.Status.ERROR -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = false,
+                                error = mapError(message = res.message)
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun searchProduct(query: String) {
-        _state.update { it.copy(searchQuery = query) }
-    }
-
-    private fun switchBookMark() {
+    private fun toggleBookmark() {
+        val newIsBookMark = !_state.value.isBookMark
         bookmarkJob?.cancel()
-        bookmarkJob = viewModelScope.launch {
-            showOnlyBookMarkProductUseCase.invoke().collect { bookmarkProductList ->
-                _state.update {
-                    it.copy(products = bookmarkProductList)
+
+        if (newIsBookMark) {
+            bookmarkJob = viewModelScope.launch {
+                showOnlyBookMarkProductUseCase.invoke().collect { bookmarkProductList ->
+                    _state.update {
+                        it.copy(
+                            isBookMark = true,
+                            products = bookmarkProductList
+                        )
+                    }
                 }
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    isBookMark = false,
+                    products = fullProductList
+                )
             }
         }
     }

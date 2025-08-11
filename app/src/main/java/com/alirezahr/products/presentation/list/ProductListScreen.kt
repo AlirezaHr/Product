@@ -1,5 +1,6 @@
 package com.alirezahr.products.presentation.list
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,7 +68,7 @@ fun ProductListScreen(
         viewModel.handleIntent(ProductListIntent.LoadProduct)
     }
 
-    val filteredProducts by remember {
+    val filteredProducts by remember(state.products, state.searchQuery) {
         derivedStateOf {
             if (state.searchQuery.isBlank()) state.products
             else state.products.filter {
@@ -113,6 +114,8 @@ fun ProductListScreen(
             onRetry = {viewModel.handleIntent(ProductListIntent.RetryClick)}
         )
     }
+
+    Log.d("LLLR","1")
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
