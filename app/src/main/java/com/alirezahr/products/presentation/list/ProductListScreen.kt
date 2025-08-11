@@ -239,7 +239,7 @@ fun ProductListContent(
                 }
             }
         }
-    } else if (state.hasLoaded && state.products.isEmpty()) {
+    } else if (state.hasLoaded && (state.searchQuery.isNotEmpty()||filteredProducts.isEmpty())) {
         InCenterParent {
             Text(text = "Product not found")
         }

@@ -7,6 +7,7 @@ import com.alirezahr.products.domain.model.Product
 import com.alirezahr.products.domain.usecase.GetProductListUseCase
 import com.alirezahr.products.domain.usecase.ShowOnlyBookMarkProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,6 +19,8 @@ class ProductListViewModel @Inject constructor(
     private val getProductUseCase: GetProductListUseCase,
     private val showOnlyBookMarkProductUseCase: ShowOnlyBookMarkProductUseCase
 ) : ViewModel() {
+    private var bookmarkJob: Job? = null
+
     private val _state = MutableStateFlow(ProductListState())
 
     val state: StateFlow<ProductListState> = _state
@@ -37,10 +40,13 @@ class ProductListViewModel @Inject constructor(
             }
 
             is ProductListIntent.SwitchChange -> {
-                if (!_state.value.isBookMark) {
+                _state.update { it.copy(isBookMark = !it.isBookMark) }
+
+                if (_state.value.isBookMark) {
                     switchBookMark()
                 } else {
-                    _state.update { it.copy(products = fullProductList, isBookMark = false) }
+                    bookmarkJob?.cancel()
+                    _state.update { it.copy(products = fullProductList) }
                 }
             }
         }
@@ -84,14 +90,11 @@ class ProductListViewModel @Inject constructor(
     }
 
     private fun switchBookMark() {
-        viewModelScope.launch {
+        bookmarkJob?.cancel()
+        bookmarkJob = viewModelScope.launch {
             showOnlyBookMarkProductUseCase.invoke().collect { bookmarkProductList ->
-
                 _state.update {
-                    it.copy(
-                        products = bookmarkProductList,
-                        isBookMark = !_state.value.isBookMark
-                    )
+                    it.copy(products = bookmarkProductList)
                 }
             }
         }
