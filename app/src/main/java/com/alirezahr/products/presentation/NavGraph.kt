@@ -25,7 +25,9 @@ fun ProductsNavGraph() {
             arguments = listOf(navArgument("productId") { type = NavType.StringType })
         ) { backStackEntry ->
             backStackEntry.arguments?.getString("productId")?.let {
-                DetailProductScreen(productId=it.toInt())
+                DetailProductScreen(productId=it.toInt()){
+                    navController.navigateUp()
+                }
             }
         }
     }

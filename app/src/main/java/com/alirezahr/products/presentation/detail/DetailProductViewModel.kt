@@ -24,6 +24,7 @@ class DetailProductViewModel @Inject constructor(
         when (intent) {
             is DetailProductIntent.LoadDetailProduct -> loadProductFromDB(intent.productId)
             is DetailProductIntent.BookMarkClick -> updateBookMark()
+            is DetailProductIntent.OnBackClick -> onBackPress()
         }
     }
 
@@ -43,5 +44,9 @@ class DetailProductViewModel @Inject constructor(
                 _state.value.product?.id!!
             )
         }
+    }
+
+    private fun onBackPress() {
+        _state.update { it.copy(onBackClicked = true) }
     }
 }
