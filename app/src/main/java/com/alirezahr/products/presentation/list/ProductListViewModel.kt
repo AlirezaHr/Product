@@ -46,6 +46,8 @@ class ProductListViewModel @Inject constructor(
             ProductListIntent.RetryClick -> {
                 loadProduct()
             }
+
+            ProductListIntent.TogglePriceSort -> {togglePriceSort()}
         }
     }
 
@@ -106,5 +108,15 @@ class ProductListViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun togglePriceSort() {
+        val current = _state.value.priceSortOrder
+        val next = when (current) {
+            PriceSortOrder.NONE -> PriceSortOrder.ASCENDING
+            PriceSortOrder.ASCENDING -> PriceSortOrder.DESCENDING
+            PriceSortOrder.DESCENDING -> PriceSortOrder.NONE
+        }
+        _state.update { it.copy(priceSortOrder = next) }
     }
 }

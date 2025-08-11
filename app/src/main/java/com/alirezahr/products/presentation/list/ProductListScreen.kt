@@ -22,6 +22,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -42,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -71,14 +76,24 @@ fun ProductListScreen(
         viewModel.handleIntent(ProductListIntent.LoadProduct)
     }
 
-    val filteredProducts by remember(state.products, state.searchQuery) {
+    val filteredProducts by remember(state.products, state.searchQuery, state.priceSortOrder) {
         derivedStateOf {
-            if (state.searchQuery.isBlank()) state.products
-            else state.products.filter {
-                it.title.contains(state.searchQuery, ignoreCase = true)
+            val result = if (state.searchQuery.isBlank()) {
+                state.products
+            } else {
+                state.products.filter {
+                    it.title.contains(state.searchQuery, ignoreCase = true)
+                }
+            }
+
+            when (state.priceSortOrder) {
+                PriceSortOrder.ASCENDING -> result.sortedBy { it.price }
+                PriceSortOrder.DESCENDING -> result.sortedByDescending { it.price }
+                else -> result
             }
         }
     }
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         Column(
             modifier = Modifier
@@ -105,6 +120,11 @@ fun ProductListScreen(
 
         BookMarkSwitch(state.isBookMark) {
             viewModel.handleIntent(ProductListIntent.SwitchChange)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+
+        TogglePriceSort(state.priceSortOrder){
+            viewModel.handleIntent(ProductListIntent.TogglePriceSort)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -218,6 +238,32 @@ fun BookMarkSwitch(state: Boolean, onCheckedChange: () -> Unit) {
             checked = state,
             onCheckedChange = { onCheckedChange.invoke() }
         )
+    }
+}
+
+@Composable
+fun TogglePriceSort(priceSortOrder: PriceSortOrder,onOrderClick:()->Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.sort_by_price),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = {
+            onOrderClick.invoke()
+        }) {
+            val text = when (priceSortOrder) {
+                PriceSortOrder.ASCENDING -> "INC"
+                PriceSortOrder.DESCENDING -> "DES"
+                else -> "NOR"
+            }
+            Text(text = text, color = Color.Blue)
+        }
     }
 }
 

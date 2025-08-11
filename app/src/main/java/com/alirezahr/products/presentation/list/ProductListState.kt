@@ -9,5 +9,6 @@ data class ProductListState(
     val error: Error? = null,
     val searchQuery: String = "",
     val isBookMark: Boolean = false,
-    val hasLoaded: Boolean = false
+    val hasLoaded: Boolean = false,
+    val priceSortOrder: PriceSortOrder = PriceSortOrder.NONE
 )

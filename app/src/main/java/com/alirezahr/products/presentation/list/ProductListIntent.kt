@@ -5,4 +5,5 @@ sealed class ProductListIntent {
     object SwitchChange:ProductListIntent()
     object RetryClick:ProductListIntent()
     data class SearchChanged(val query:String):ProductListIntent()
+    object TogglePriceSort : ProductListIntent()
 }
