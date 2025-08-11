@@ -66,12 +66,12 @@ class ProductListViewModel @Inject constructor(
                         fullProductList = res.data ?: emptyList()
 
                         _state.update {
-                        it.copy(
-                            isLoading = false,
-                            products = res.data ?: emptyList(),
-                            hasLoaded = true
-                        )
-                    }
+                            it.copy(
+                                isLoading = false,
+                                products = res.data ?: emptyList(),
+                                hasLoaded = true
+                            )
+                        }
                     }
 
                     Resource.Status.ERROR -> _state.update {

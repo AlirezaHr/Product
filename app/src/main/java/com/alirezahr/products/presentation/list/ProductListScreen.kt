@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.alirezahr.products.R
 import com.alirezahr.products.domain.model.Product
 import com.alirezahr.products.presentation.common.InCenterParent
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -72,38 +75,39 @@ fun ProductListScreen(
             }
         }
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(18.dp, 56.dp, 18.dp, 18.dp)
-    ) {
-        Text(
-            text = "Product List",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.headlineLarge
-        )
-
-        Column(Modifier.padding(16.dp)) {
-            SearchBar(
-                query = state.searchQuery,
-                onQueryChange = { viewModel.handleIntent(ProductListIntent.SearchChanged(it)) },
-                onSearch = { query ->
-                    viewModel.handleIntent(ProductListIntent.SearchChanged(query))
-                },
+    PullToRefreshBox() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(18.dp, 56.dp, 18.dp, 18.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.product_list),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineLarge
             )
-        }
 
-        Spacer(Modifier.height(4.dp))
+            Column(Modifier.padding(16.dp)) {
+                SearchBar(
+                    query = state.searchQuery,
+                    onQueryChange = { viewModel.handleIntent(ProductListIntent.SearchChanged(it)) },
+                    onSearch = { query ->
+                        viewModel.handleIntent(ProductListIntent.SearchChanged(query))
+                    },
+                )
+            }
 
-        BookMarkSwitch(state.isBookMark) {
-            viewModel.handleIntent(ProductListIntent.SwitchChange)
-        }
+            Spacer(Modifier.height(4.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            BookMarkSwitch(state.isBookMark) {
+                viewModel.handleIntent(ProductListIntent.SwitchChange)
+            }
 
-        ProductListContent(state, filteredProducts, listState) { product ->
-            onProductClick.invoke(product)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ProductListContent(state, filteredProducts, listState) { product ->
+                onProductClick.invoke(product)
+            }
         }
     }
 }
@@ -151,7 +155,7 @@ fun SearchBar(
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search…",
+    placeholder: String = stringResource(R.string.search),
     enabled: Boolean = true,
 ) {
     val focusManager = LocalFocusManager.current
@@ -166,12 +170,12 @@ fun SearchBar(
             shape = RoundedCornerShape(12.dp),
             placeholder = { Text(placeholder) },
             leadingIcon = {
-                Icon(Icons.Filled.Search, contentDescription = "Search")
+                Icon(Icons.Filled.Search, contentDescription =null)
             },
             trailingIcon = {
                 if (query.isNotEmpty()) {
                     IconButton(onClick = { onQueryChange("") }) {
-                        Icon(Icons.Filled.Clear, contentDescription = "Clear")
+                        Icon(Icons.Filled.Clear, contentDescription = null)
                     }
                 }
             },
@@ -197,7 +201,7 @@ fun BookMarkSwitch(state: Boolean, onCheckedChange: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Bookmarks Only",
+            text = stringResource(R.string.bookmarks_only),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(end = 8.dp)
         )
@@ -221,12 +225,14 @@ fun ProductListContent(
             CircularProgressIndicator(modifier = Modifier.size(32.dp))
         }
     } else if (state.error != null) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            text = "Error : ${state.error}",
-            fontSize = 18.sp,
-        )
+        InCenterParent {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                text = stringResource(R.string.error, state.error),
+                fontSize = 18.sp,
+            )
+        }
     } else if (filteredProducts.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -241,7 +247,7 @@ fun ProductListContent(
         }
     } else if (state.hasLoaded && (state.searchQuery.isNotEmpty()||filteredProducts.isEmpty())) {
         InCenterParent {
-            Text(text = "Product not found")
+            Text(text = stringResource(R.string.product_not_found))
         }
     }
 }

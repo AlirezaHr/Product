@@ -24,9 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.alirezahr.products.R
 import com.alirezahr.products.domain.model.Product
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -65,7 +67,7 @@ fun DetailProductScreen(
             item {
                 GlideImage(
                     model = product.image,
-                    contentDescription = "Product Image",
+                    contentDescription = null,
                 modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -83,7 +85,7 @@ fun AppBar(product: Product, onBackClicked: () -> Unit, onFavClicked: () -> Unit
     Row(modifier = Modifier.padding(22.dp)) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = null,
             tint = Color.Black,
             modifier = Modifier
                 .size(34.dp)
@@ -94,7 +96,7 @@ fun AppBar(product: Product, onBackClicked: () -> Unit, onFavClicked: () -> Unit
 
         Icon(
             imageVector = if (product.isBookMark) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = "Toggle Bookmark",
+            contentDescription = null,
             tint = Color.Red,
             modifier = Modifier
                 .size(32.dp)
@@ -150,7 +152,7 @@ fun ContentDetailProduct(product: Product, onBookMarkClick: () -> Unit) {
         Spacer(modifier = Modifier.height(30.dp))
 
         Text(
-            text = "Description",
+            text = stringResource(R.string.description),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleLarge
         )
