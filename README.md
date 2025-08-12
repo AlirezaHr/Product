@@ -8,11 +8,11 @@ A modern Android application built with **Jetpack Compose**, showcasing a list o
 | Layer              | Tools & Libraries                          |
 |-------------------|---------------------------------------------|
 | UI                | Jetpack Compose, Material Design            |
-| Architecture      | MVVM or MVI, Clean Architecture             |
+| Architecture      | MVI, Clean Architecture             |
 | Networking        | Retrofit, Coroutines                        |
 | Dependency Injection | Hilt                                   |
 | Persistence       | Room Database                               |
-| Async Data Flow   | Kotlin Flow or LiveData                     |
+| Async Data Flow   | Kotlin Flow                    |
 | Testing (Planned) | Unit Tests, Integration Tests               |
 
 ---
